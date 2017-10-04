@@ -35,13 +35,13 @@ $ npm i babel-plugin-import --save-dev //用于按需引入 antd 的 JavaScript 
 修改.roadhogrc，加上"proxy"配置：
 
 ```
-"proxy": {
-"/api": {
-"target": "[http://jsonplaceholder.typicode.com/](http://jsonplaceholder.typicode.com/)",
-"changeOrigin": true,
-"pathRewrite": { "^/api" : "" }
-}
-},
+ "proxy": {
+    "/erpQposRest": {
+        "target": "http://v2.qpos.testin.qtoolsbaby.cn:81",
+        "secure": false,
+        "changeOrigin": true
+      }
+    },
 ```
 
 此时启动应用npm start访问 [http://localhost:8000/api/users](https://www.gitbook.com/book/lcgyh/qpos/edit#) 可以访问到 [http://jsonplaceholder.typicode.com/users](https://www.gitbook.com/book/lcgyh/qpos/edit#)

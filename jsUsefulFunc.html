@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>JS 28个技巧</title>
+</head>
+<body>
+  <script>
+    console.log('=====1、判断对象的数据类型=====');
+    const isType = type => target => `[object ${type}]` === Object.prototype.toString.call(target)
+    const isArray = isType('Array');
+    console.log(isArray([]))
+
+
+    console.log('=====2、循环实现数组map方法=====')
+    const selfMap = function(fn,context){
+      console.log(fn)
+
+      let arr = Array.prototype.slice.call(this);
+      let mappedArr = Array(arr.length - 1)
+      for(let i=0;i<arr.length;i++){
+        if(!arr.hasOwnProperty(i)) continue;
+        mappedArr[i] = fn.call(context,arr[i],i,this)
+      }
+      return mappedArr;
+    }
+    Array.prototype.selfMap = selfMap;
+    let arr1 = [1,2,3].selfMap(number => number*2);
+    console.log(arr1)
+
+
+    console.log('=====3、使用reduce实现数组map方法=====')
+    const selfMap2 = function(fn,context){
+      let arr = Array.prototype.slice.call(this);
+      return arr.reduce((pre,cur,index)=>{
+        return [...pre,fn.call(context,cur,index,this)]
+      },[])
+    }
+    Array.prototype.selfMap2 = selfMap2;
+    let arr2 = [4,5,6].selfMap2(number => number*2);
+    console.log(arr2)
+
+    console.log('=====4、循环实现数组filter方法=====')
+    const selfFilter = function(fn,context){
+      let arr = Array.prototype.slice.call(this);
+      let filteredArr = [];
+      for(let i=0;i<arr.length;i++){
+        if(!arr.hasOwnProperty(i)) continue;
+        fn.call(context,arr[i],i,this) && filteredArr.push(arr[i])
+      }
+      return filteredArr;
+    }
+    Array.prototype.selfFilter = selfFilter;
+    let arr3 = [1,21,38].selfFilter(number=>number%2===0)
+    console.log(arr3)
+
+    console.log('=====5、使用reduce实现数组的filter方法=====')
+    const selfFilter2 = function(fn,context){
+      return this.reduce((pre,cur,index)=>{
+        return fn.call(context,cur,index,this) ? [...pre,cur] : [...pre]
+      },[])
+    }
+    Array.prototype.selfFilter2 = selfFilter2;
+    let arr4 = [11,33,23,2].selfFilter2(number => number%2 !== 0)
+    console.log(arr4)
+
+    console.log('6、=====循环实现数组的some方法=====')
+    const selfSome = function(fn,context){
+      let arr = Array.prototype.slice.call(this);
+      if(!arr.length) return false;
+      for(let i=0; i<arr.length;i++){
+        if(!arr.hasOwnProperty(i)) continue;
+        let res = fn.call(context,arr[i],i,this)
+        if(res) return true
+      }
+      return false
+    }
+    Array.prototype.selfSome = selfSome;
+    let arr5 = [1,23,33,43,52].selfSome(number=>number>100)
+    console.log(arr5);
+
+    console.log('=====7、循环实现数组的reduce方法=====')
+    Array.prototype.selfReduce = function(fn,initialValue){
+      let arr = Array.prototype.slice.call(this);
+      let res;
+      let startIndex;
+      if(initialValue === undefined){
+        for(let i=0; i< arr.length; i++){
+          if(!arr.hasOwnProperty(i)) continue;
+          startIndex = i;
+          res = arr[i];
+          break;
+        }
+      }else{
+        res = initialValue
+      }
+
+      for(let i = ++startIndex || 0; i<arr.length; i++){
+        if(!arr.hasOwnProperty(i)) continue;
+        res = fn.call(null,res,arr[i],i,this)
+      }
+      return res
+    }
+    let res1 = [1,23,44].selfReduce((acc,cur)=>{
+      return acc + cur
+    },20)
+    console.log(res1)
+  </script>
+</body>
+</html>
